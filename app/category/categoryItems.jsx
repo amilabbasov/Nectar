@@ -17,8 +17,8 @@ import { riceAndGrains } from '../data/productCategories/riceAndGrains';
 import ProductCard from '../components/common/ProductCard';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const ITEM_WIDTH = (SCREEN_WIDTH - 60) / 2;
-const ITEM_HEIGHT = 220;
+const ITEM_WIDTH = (SCREEN_WIDTH - 50) / 2;
+const ITEM_HEIGHT = 240;
 
 export default function CategoryItemsScreen() {
     const { categoryName } = useLocalSearchParams();

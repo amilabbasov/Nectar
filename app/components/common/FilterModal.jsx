@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, Dimensions, Animated } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, Dimensions, Animated, Platform } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import { PanGestureHandler, State } from 'react-native-gesture-handler';
 
 const CATEGORIES = [
   { id: 'organic', label: 'Organic' },
@@ -62,13 +62,20 @@ const FilterModal = ({ visible, onClose, onApply, onClear }) => {
     }
   }, [visible]);
 
-  const handleGestureEvent = Animated.event(
-    [{ nativeEvent: { translationY: translateY } }],
-    { useNativeDriver: true }
-  );
+  const handleGestureEvent = Platform.OS === 'ios' 
+    ? Animated.event(
+        [{ nativeEvent: { translationY: translateY } }],
+        { useNativeDriver: true }
+      )
+    : (event) => {
+        const { translationY } = event.nativeEvent;
+        if (translationY > 0) {
+          translateY.setValue(translationY);
+        }
+      };
 
   const handleHandlerStateChange = (event) => {
-    if (event.nativeEvent.state === 5) { // End state
+    if (event.nativeEvent.state === State.END) {
       const translationY = event.nativeEvent.translationY;
 
       if (translationY > 300) {
