@@ -3,7 +3,7 @@ import { Provider as PaperProvider } from "react-native-paper";
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback, useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import 'react-native-reanimated';
 import { CartProvider } from '../context/CartContext';
 import { FavoritesProvider } from '../context/FavoritesContext';
@@ -26,8 +26,8 @@ export default function RootLayout() {
     async function prepare() {
       try {
         // Pre-load any data or resources here
-        // Wait for fonts to load
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Add a longer delay to ensure splash screen is visible
+        await new Promise(resolve => setTimeout(resolve, 2500));
       } catch (e) {
         console.warn('Error preparing app:', e);
       } finally {
@@ -40,15 +40,23 @@ export default function RootLayout() {
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded && appIsReady) {
-      await SplashScreen.hideAsync();
+      // Add a small delay before hiding splash screen for smoother transition
+      setTimeout(async () => {
+        try {
+          await SplashScreen.hideAsync();
+        } catch (e) {
+          // Handle any errors hiding the splash screen
+          console.log("Error hiding splash screen:", e);
+        }
+      }, 500);
     }
   }, [fontsLoaded, appIsReady]);
 
-  // Show a loading indicator if fonts aren't loaded or app isn't ready
+  // Show a loading screen that matches your splash screen colors
   if (!fontsLoaded || !appIsReady) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#53B175" />
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#FFFFFF" />
       </View>
     );
   }
@@ -76,3 +84,12 @@ export default function RootLayout() {
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#53B175', // Match your splash screen background color
+  }
+});

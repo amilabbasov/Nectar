@@ -4,10 +4,15 @@
     "slug": "nectar",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./app/assets/images/icon.png",
+    "icon": "./app/assets/images/appItems/splash.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "splash": {
+      "image": "./app/assets/images/appItems/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#53B175"
+    },
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
@@ -21,7 +26,7 @@
     "android": {
       "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
-        "foregroundImage": "./app/assets/images/adaptive-icon.png",
+        "foregroundImage": "./app/assets/images/appItems/splash.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.amilabbasov.nectar",
@@ -42,13 +47,11 @@
       [
         "expo-splash-screen",
         {
-          "image": "./app/assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "image": "./app/assets/images/appItems/splash.png",
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#53B175"
         }
       ],
-      "expo-location",
       [
         "expo-location",
         {
