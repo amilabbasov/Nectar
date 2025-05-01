@@ -12,7 +12,7 @@ import { spicesAndSeasonings } from '../data/productCategories/spicesAndSeasonin
 import { beverages } from '../data/productCategories/beverages';
 import { cookingOilGhee } from '../data/productCategories/cookingOilGhee';
 
-const ITEM_HEIGHT = 260; // Approximate height of each product card including margins
+const ITEM_HEIGHT = 260;
 
 export default function AllProductsScreen() {
   const { category, title } = useLocalSearchParams();
@@ -52,7 +52,7 @@ export default function AllProductsScreen() {
 
   const getItemLayout = useCallback((data, index) => ({
     length: ITEM_HEIGHT,
-    offset: ITEM_HEIGHT * Math.floor(index / 2), // Divide by 2 because of numColumns={2}
+    offset: ITEM_HEIGHT * Math.floor(index / 2),
     index,
   }), []);
 
@@ -126,7 +126,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#181725',
     textAlign: 'center',
-    marginRight: 40, // To offset the back button width and center the title
   },
   backButton: {
     padding: 8,

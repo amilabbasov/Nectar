@@ -135,7 +135,7 @@ const Register = React.memo(() => {
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : null}
             style={{ flex: 1 }}
-            keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
           >
             <ScrollView
               contentContainerStyle={styles.scrollViewContent}

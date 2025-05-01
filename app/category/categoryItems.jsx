@@ -1,10 +1,9 @@
-import { View, Text, StyleSheet, TouchableOpacity, InteractionManager, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, InteractionManager, ActivityIndicator, Platform, Dimensions } from 'react-native';
 import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FlashList } from '@shopify/flash-list';
-import { Image } from 'expo-image';
 import { organicProducts } from '../data/productCategories/organicProducts';
 import { freshFruitsVegetables } from '../data/productCategories/freshFruitsVegetables';
 import { cookingOilGhee } from '../data/productCategories/cookingOilGhee';
@@ -17,8 +16,9 @@ import { spicesAndSeasonings } from '../data/productCategories/spicesAndSeasonin
 import { riceAndGrains } from '../data/productCategories/riceAndGrains';
 import ProductCard from '../components/common/ProductCard';
 
-const ITEM_HEIGHT = 260;
-const ITEM_WIDTH = '47%';
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const ITEM_WIDTH = (SCREEN_WIDTH - 60) / 2;
+const ITEM_HEIGHT = 220;
 
 export default function CategoryItemsScreen() {
     const { categoryName } = useLocalSearchParams();
@@ -27,11 +27,9 @@ export default function CategoryItemsScreen() {
     const [isLoading, setIsLoading] = useState(true);
     const listRef = useRef(null);
 
-    // Pre-load images and prepare the component
     useEffect(() => {
         setIsLoading(true);
         const interactionPromise = InteractionManager.runAfterInteractions(() => {
-            // Wait for UI thread to be idle before rendering list
             setTimeout(() => {
                 setIsReady(true);
                 setIsLoading(false);
@@ -41,7 +39,6 @@ export default function CategoryItemsScreen() {
         return () => interactionPromise.cancel();
     }, []);
 
-    // Map category names to their respective data
     const categoryDataMap = useMemo(() => ({
         'Fresh Fruits & Vegetables': freshFruitsVegetables,
         'Cooking Oil & Ghee': cookingOilGhee,
@@ -106,7 +103,7 @@ export default function CategoryItemsScreen() {
                 renderItem={ProductCardItem}
                 keyExtractor={(item) => item.key}
                 numColumns={2}
-                estimatedItemSize={260}
+                estimatedItemSize={220} // ITEM_HEIGHT ilə eyni olsun
                 contentContainerStyle={styles.productsGrid}
                 showsVerticalScrollIndicator={false}
                 initialNumToRender={4}
@@ -114,11 +111,8 @@ export default function CategoryItemsScreen() {
                 windowSize={3}
                 removeClippedSubviews={Platform.OS === 'android'}
                 overrideItemLayout={(layout, item) => {
-                    layout.size = 260;
+                    layout.size = 220; // ITEM_HEIGHT ilə eyni olsun
                 }}
-                onEndReachedThreshold={0.5}
-                estimatedFirstItemOffset={0}
-                drawDistance={ITEM_HEIGHT * 2}
             />
         </SafeAreaView>
     );
@@ -148,12 +142,15 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     productsGrid: {
-        padding: 16,
+        paddingHorizontal: 10,
+        paddingTop: 10,
+        paddingBottom: Platform.OS === 'android' ? 20 : 10,
     },
     productCardWrapper: {
         width: ITEM_WIDTH,
-        marginBottom: 16,
-        marginHorizontal: '1.5%',
+        height: ITEM_HEIGHT,
+        marginBottom: 10,
+        marginHorizontal: 5,
     },
     columnWrapper: {
         justifyContent: 'space-between',
