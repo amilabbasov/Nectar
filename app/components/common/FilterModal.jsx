@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, Dimensions, Animated, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, Dimensions, Animated, Platform, TouchableWithoutFeedback } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
-import { PanGestureHandler, State } from 'react-native-gesture-handler';
+import { PanGestureHandler, State, GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const CATEGORIES = [
   { id: 'organic', label: 'Organic' },
@@ -62,23 +62,18 @@ const FilterModal = ({ visible, onClose, onApply, onClear }) => {
     }
   }, [visible]);
 
-  const handleGestureEvent = Platform.OS === 'ios' 
-    ? Animated.event(
-        [{ nativeEvent: { translationY: translateY } }],
-        { useNativeDriver: true }
-      )
-    : (event) => {
-        const { translationY } = event.nativeEvent;
-        if (translationY > 0) {
-          translateY.setValue(translationY);
-        }
-      };
+  const handleGestureEvent = (event) => {
+    const { translationY } = event.nativeEvent;
+    if (translationY > 0) {
+      translateY.setValue(translationY);
+    }
+  };
 
   const handleHandlerStateChange = (event) => {
     if (event.nativeEvent.state === State.END) {
-      const translationY = event.nativeEvent.translationY;
+      const { translationY } = event.nativeEvent;
 
-      if (translationY > 300) {
+      if (translationY > 100) {
         Animated.timing(translateY, {
           toValue: height,
           duration: 250,
@@ -141,135 +136,147 @@ const FilterModal = ({ visible, onClose, onApply, onClear }) => {
       transparent
       animationType="none"
       onRequestClose={onClose}
+      statusBarTranslucent
     >
-      <View style={styles.modalContainer}>
-        <BlurView intensity={50} style={styles.blurView}>
-          <PanGestureHandler
-            onGestureEvent={handleGestureEvent}
-            onHandlerStateChange={handleHandlerStateChange}
-          >
-            <Animated.View 
-              style={[
-                styles.modalContent, 
-                { 
-                  transform: [{ 
-                    translateY: translateY.interpolate({
-                      inputRange: [0, 1000],
-                      outputRange: [0, 1000],
-                      extrapolate: 'clamp'
-                    }) 
-                  }],
-                }
-              ]}
-            >
-              <View style={styles.dragIndicator} />
-              <View style={styles.header}>
-                <Text style={styles.title}>Filters</Text>
-                <View style={styles.headerButtons}>
-                  <TouchableOpacity onPress={handleClearFilters} style={styles.clearButton}>
-                    <Text style={styles.clearButtonText}>Clear</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={onClose}>
-                    <Ionicons name="close" size={24} color="#181725" />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollContent}>
-                {/* Categories */}
-                <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>Categories</Text>
-                  <View style={styles.categoriesGrid}>
-                    {CATEGORIES.map((category) => (
-                      <TouchableOpacity
-                        key={category.id}
-                        style={[
-                          styles.categoryChip,
-                          filters.selectedCategories.includes(category.id) && styles.categoryChipSelected
-                        ]}
-                        onPress={() => handleCategoryToggle(category.id)}
-                      >
-                        <Text style={[
-                          styles.categoryChipText,
-                          filters.selectedCategories.includes(category.id) && styles.categoryChipTextSelected
-                        ]}>
-                          {category.label}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                </View>
-
-                {/* Sort By */}
-                <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>Sort By</Text>
-                  <View style={styles.sortOptions}>
-                    {SORT_OPTIONS.map((option) => (
-                      <TouchableOpacity
-                        key={option.id}
-                        style={[
-                          styles.sortOption,
-                          filters.sortBy === option.id && styles.sortOptionSelected
-                        ]}
-                        onPress={() => handleSortChange(option.id)}
-                      >
-                        <Text style={[
-                          styles.sortOptionText,
-                          filters.sortBy === option.id && styles.sortOptionTextSelected
-                        ]}>
-                          {option.label}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                </View>
-
-                {/* Product Types */}
-                <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>Product Type</Text>
-                  <View style={styles.productTypesGrid}>
-                    {PRODUCT_TYPES.map((type) => (
-                      <TouchableOpacity
-                        key={type.id}
-                        style={[
-                          styles.productTypeChip,
-                          filters.selectedProductTypes.includes(type.id) && styles.productTypeChipSelected
-                        ]}
-                        onPress={() => handleProductTypeToggle(type.id)}
-                      >
-                        <Text style={[
-                          styles.productTypeChipText,
-                          filters.selectedProductTypes.includes(type.id) && styles.productTypeChipTextSelected
-                        ]}>
-                          {type.label}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                </View>
-
-                {/* In Stock Only */}
-                <TouchableOpacity
-                  style={styles.stockToggle}
-                  onPress={() => setFilters(prev => ({ ...prev, inStockOnly: !prev.inStockOnly }))}
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <TouchableWithoutFeedback onPress={onClose}>
+          <View style={styles.modalContainer}>
+            <BlurView intensity={Platform.OS === 'ios' ? 50 : 100} tint="dark" style={styles.blurView}>
+              <PanGestureHandler
+                onGestureEvent={handleGestureEvent}
+                onHandlerStateChange={handleHandlerStateChange}
+                activeOffsetY={[0, 20]}
+                failOffsetY={[-20, 0]}
+                minDist={10}
+              >
+                <Animated.View 
+                  style={[
+                    styles.modalContent, 
+                    { 
+                      transform: [{ 
+                        translateY: translateY.interpolate({
+                          inputRange: [0, 1000],
+                          outputRange: [0, 1000],
+                          extrapolate: 'clamp'
+                        }) 
+                      }],
+                    }
+                  ]}
                 >
-                  <Text style={styles.stockToggleText}>Show In Stock Only</Text>
-                  <View style={[
-                    styles.checkbox,
-                    filters.inStockOnly && styles.checkboxSelected
-                  ]}>
-                    {filters.inStockOnly && <Ionicons name="checkmark" size={16} color="#FFFFFF" />}
+                  <View style={styles.dragIndicator} />
+                  <View style={styles.header}>
+                    <Text style={styles.title}>Filters</Text>
+                    <View style={styles.headerButtons}>
+                      <TouchableOpacity onPress={handleClearFilters} style={styles.clearButton}>
+                        <Text style={styles.clearButtonText}>Clear</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={onClose}>
+                        <Ionicons name="close" size={24} color="#181725" />
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                </TouchableOpacity>
-              </ScrollView>
 
-              <TouchableOpacity style={styles.applyButton} onPress={handleApply}>
-                <Text style={styles.applyButtonText}>Apply Filters</Text>
-              </TouchableOpacity>
-            </Animated.View>
-          </PanGestureHandler>
-        </BlurView>
-      </View>
+                  <ScrollView 
+                    showsVerticalScrollIndicator={false} 
+                    style={styles.scrollContent}
+                    nestedScrollEnabled={true}
+                  >
+                    <View style={styles.section}>
+                      <Text style={styles.sectionTitle}>Categories</Text>
+                      <View style={styles.categoriesGrid}>
+                        {CATEGORIES.map((category) => (
+                          <TouchableOpacity
+                            key={category.id}
+                            style={[
+                              styles.categoryChip,
+                              filters.selectedCategories.includes(category.id) && styles.categoryChipSelected
+                            ]}
+                            onPress={() => handleCategoryToggle(category.id)}
+                          >
+                            <Text style={[
+                              styles.categoryChipText,
+                              filters.selectedCategories.includes(category.id) && styles.categoryChipTextSelected
+                            ]}>
+                              {category.label}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    </View>
+
+                    <View style={styles.section}>
+                      <Text style={styles.sectionTitle}>Sort By</Text>
+                      <View style={styles.sortOptions}>
+                        {SORT_OPTIONS.map((option) => (
+                          <TouchableOpacity
+                            key={option.id}
+                            style={[
+                              styles.sortOption,
+                              filters.sortBy === option.id && styles.sortOptionSelected
+                            ]}
+                            onPress={() => handleSortChange(option.id)}
+                          >
+                            <Text style={[
+                              styles.sortOptionText,
+                              filters.sortBy === option.id && styles.sortOptionTextSelected
+                            ]}>
+                              {option.label}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    </View>
+
+                    <View style={styles.section}>
+                      <Text style={styles.sectionTitle}>Product Type</Text>
+                      <View style={styles.productTypesGrid}>
+                        {PRODUCT_TYPES.map((type) => (
+                          <TouchableOpacity
+                            key={type.id}
+                            style={[
+                              styles.productTypeChip,
+                              filters.selectedProductTypes.includes(type.id) && styles.productTypeChipSelected
+                            ]}
+                            onPress={() => handleProductTypeToggle(type.id)}
+                          >
+                            <Text style={[
+                              styles.productTypeChipText,
+                              filters.selectedProductTypes.includes(type.id) && styles.productTypeChipTextSelected
+                            ]}>
+                              {type.label}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    </View>
+
+                    <TouchableOpacity
+                      style={styles.stockToggle}
+                      onPress={() => setFilters(prev => ({ ...prev, inStockOnly: !prev.inStockOnly }))}
+                    >
+                      <Text style={styles.stockToggleText}>Show In Stock Only</Text>
+                      <View style={[
+                        styles.checkbox,
+                        filters.inStockOnly && styles.checkboxSelected
+                      ]}>
+                        {filters.inStockOnly && <Ionicons name="checkmark" size={16} color="#FFFFFF" />}
+                      </View>
+                    </TouchableOpacity>
+                  </ScrollView>
+
+                  <TouchableOpacity 
+                    style={styles.applyButton} 
+                    onPress={handleApply}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.applyButtonText}>Apply Filters</Text>
+                  </TouchableOpacity>
+                </Animated.View>
+              </PanGestureHandler>
+            </BlurView>
+          </View>
+        </TouchableWithoutFeedback>
+      </GestureHandlerRootView>
     </Modal>
   );
 };
