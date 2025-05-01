@@ -12,6 +12,11 @@
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "expo-env.d.ts",
+    "app/screens/shop/Shop.jsx",
+    "app/screens/favourite/Favourite.jsx",
+    "app/screens/explore/Explore.jsx",
+    "app/screens/cart/Cart.jsx",
+    "app/screens/account/Account.jsx"
   ]
 }
