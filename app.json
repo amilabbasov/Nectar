@@ -8,17 +8,27 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./app/assets/images/appItems/splash.png",
+      "image": null,
       "resizeMode": "contain",
-      "backgroundColor": "#53B175",
-      "hideExponentText": true
+      "backgroundColor": "#1CA044"
     },
+    "assetBundlePatterns": [
+      "./app/assets/**/*",
+      "./assets/**/*"
+    ],
+    "fonts": [
+      "./app/assets/fonts/**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Nectar needs your location to show nearby stores and delivery options."
+        "NSLocationWhenInUseUsageDescription": "Nectar needs your location to show nearby stores and delivery options.",
+        "UIStatusBarHidden": true,
+        "UILaunchStoryboardName": "SplashScreen",
+        "UIViewControllerBasedStatusBarAppearance": false
       },
       "bundleIdentifier": "com.amilabbasov.nectar",
+      "splash": null,
       "config": {
         "googleMapsApiKey": "YOUR_VALID_GOOGLE_MAPS_API_KEY"
       }
@@ -27,8 +37,9 @@
       "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/images/appItems/splash.png",
-        "backgroundColor": "#53B175"
+        "backgroundColor": "#1CA044"
       },
+      "splash": null,
       "package": "com.amilabbasov.nectar",
       "permissions": [
         "ACCESS_FINE_LOCATION",
@@ -50,17 +61,7 @@
     },
     "plugins": [
       "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./app/assets/images/appItems/splash.png",
-          "resizeMode": "contain",
-          "backgroundColor": "#53B175",
-          "imageResizeMode": "contain",
-          "hideExponentIconAndroid": true,
-          "hideExponentText": true
-        }
-      ],
+      "expo-secure-store",
       [
         "expo-location",
         {
@@ -68,8 +69,7 @@
           "locationAlwaysPermission": "Nectar uses your location to find nearby stores and delivery options even when the app is in the background.",
           "locationWhenInUsePermission": "Nectar uses your location to find nearby stores and delivery options."
         }
-      ],
-      "expo-secure-store"
+      ]
     ],
     "experiments": {
       "typedRoutes": true

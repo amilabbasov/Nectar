@@ -1,9 +1,8 @@
 import { Stack } from "expo-router";
 import { Provider as PaperProvider } from "react-native-paper";
 import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
 import { useCallback, useEffect, useState } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Platform, StatusBar } from 'react-native';
 import 'react-native-reanimated';
 import { CartProvider } from '../context/CartContext';
 import { FavoritesProvider } from '../context/FavoritesContext';
@@ -12,8 +11,9 @@ import { LocationProvider } from '../context/LocationContext';
 import { OrdersProvider } from '../context/OrdersContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-// Keep the splash screen visible while we fetch resources
-SplashScreen.preventAutoHideAsync();
+if (Platform && Platform.OS === 'ios') {
+  StatusBar.setHidden(true);
+}
 
 function RootLayout() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -21,11 +21,10 @@ function RootLayout() {
     'MaterialCommunityIcons': require('react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf'),
   });
 
-  // Prepare app resources
   useEffect(() => {
     async function prepare() {
       try {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 500));
       } catch (e) {
         console.warn('Error preparing app:', e);
       } finally {
@@ -39,24 +38,14 @@ function RootLayout() {
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded && appIsReady) {
       try {
-        await SplashScreen.hideAsync();
       } catch (e) {
-        console.log("Error hiding splash screen:", e);
+        console.log("Error handling splash screen:", e);
       }
     }
   }, [fontsLoaded, appIsReady]);
 
-  // Show a simple loading screen with only background color matching splash
   if (!fontsLoaded || !appIsReady) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Image 
-          source={require('./assets/images/appItems/splash.png')}
-          style={styles.splashImage}
-          resizeMode="contain"
-        />
-      </View>
-    );
+    return null;
   }
 
   return (
@@ -86,15 +75,10 @@ function RootLayout() {
 const styles = StyleSheet.create({
   loadingContainer: {
     flex: 1,
-    backgroundColor: '#53B175',
+    backgroundColor: '#1CA044',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  splashImage: {
-    width: '70%',
-    height: '40%',
-  },
+  }
 });
 
-// Make sure the default export is explicit and at the end of the file
 export default RootLayout;
