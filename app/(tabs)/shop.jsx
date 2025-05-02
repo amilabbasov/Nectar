@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { ScrollView, View, Text, StyleSheet, Dimensions, TextInput, RefreshControl, InteractionManager, FlatList, useWindowDimensions } from 'react-native';
 import { Image } from 'expo-image';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { BannerCarousel } from '../../components/BannerCarousel';
 import ExclusiveOfferSection from '../components/common/ExclusiveOfferSection';
 import BestSellerSection from '../components/common/BestSellerSection';
@@ -22,6 +21,7 @@ import { spicesAndSeasonings } from '../data/productCategories/spicesAndSeasonin
 import ProductCard from '../components/common/ProductCard';
 import { useLocationContext } from '../../context/LocationContext';
 import { debounce } from 'lodash';
+const { SafeAreaView } = require('../../components/common');
 
 const { width } = Dimensions.get('window');
 

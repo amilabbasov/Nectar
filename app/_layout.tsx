@@ -3,7 +3,7 @@ import { Provider as PaperProvider } from "react-native-paper";
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback, useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import 'react-native-reanimated';
 import { CartProvider } from '../context/CartContext';
 import { FavoritesProvider } from '../context/FavoritesContext';
@@ -52,12 +52,10 @@ function RootLayout() {
     }
   }, [fontsLoaded, appIsReady]);
 
-  // Show a loading screen that matches your splash screen colors
+  // Show a simple loading screen with only background color matching splash
   if (!fontsLoaded || !appIsReady) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#FFFFFF" />
-      </View>
+      <View style={styles.loadingContainer} />
     );
   }
 
@@ -88,8 +86,6 @@ function RootLayout() {
 const styles = StyleSheet.create({
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#53B175', // Match your splash screen background color
   }
 });

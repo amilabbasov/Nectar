@@ -17,15 +17,15 @@ const BANNER_ASPECT_RATIO = 3.33;
 const BANNER_HEIGHT = CAROUSEL_WIDTH / BANNER_ASPECT_RATIO;
 
 const BANNER_IMAGES = [
+  require('../app/assets/images/banners/banner3.jpg'),
   require('../app/assets/images/banners/banner1.jpg'),
   require('../app/assets/images/banners/banner2.jpg'),
-  require('../app/assets/images/banners/banner3.jpg'),
 ];
 
 export const BannerCarousel = React.memo(() => {
   const [activeIndex, setActiveIndex] = useState(0);
   const slideAnim = useRef(new Animated.Value(0)).current;
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Simple function to move to the next banner
   const moveToNextBanner = useCallback(() => {

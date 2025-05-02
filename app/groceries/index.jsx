@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { Image } from 'expo-image';
 import { useRouter, Stack } from 'expo-router';
 import { groceryCategories } from '../data/groceryCategories';
+const { SafeAreaView } = require('../../components/common');
 
 export default function GroceriesScreen() {
   const router = useRouter();

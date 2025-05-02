@@ -17,8 +17,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useLocationContext } from '../../../context/LocationContext';
-const { SafeAreaView } = require('../../../components/common');
+import { useLocationContext } from '../context/LocationContext';
+const { SafeAreaView } = require('../components/common');
 
 const ModernDropdown = ({ data, placeholder, onSelect, selectedItem, disabled, isArea = false }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -32,16 +32,13 @@ const ModernDropdown = ({ data, placeholder, onSelect, selectedItem, disabled, i
         outputRange: ['0deg', '180deg']
     });
 
-    // Helper function to check if an item is selected
     const isItemSelected = (item) => {
         if (!selectedItem) return false;
         
-        // For countries (using code)
         if (!isArea && item.code && selectedItem.code) {
             return item.code === selectedItem.code;
         }
         
-        // For cities (using id)
         if (isArea && item.id && selectedItem.id) {
             return item.id === selectedItem.id;
         }
@@ -49,12 +46,10 @@ const ModernDropdown = ({ data, placeholder, onSelect, selectedItem, disabled, i
         return false;
     };
 
-    // Close dropdown if user taps outside
     const closeDropdown = () => {
         if (isOpen) setIsOpen(false);
     };
 
-    // Handle dropdown open/close animations
     useEffect(() => {
         if (isOpen) {
             Animated.parallel([
@@ -210,7 +205,7 @@ const ModernDropdown = ({ data, placeholder, onSelect, selectedItem, disabled, i
     );
 };
 
-const Location = () => {
+const ChangeLocation = () => {
     const router = useRouter();
     const {
         countries,
@@ -223,7 +218,6 @@ const Location = () => {
         handleCitySelect
     } = useLocationContext();
 
-    // Button animation
     const buttonScale = useRef(new Animated.Value(1)).current;
     const buttonOpacity = useRef(new Animated.Value(1)).current;
 
@@ -257,6 +251,14 @@ const Location = () => {
         ]).start();
     };
 
+    const handleBackButton = () => {
+        router.back();
+    };
+
+    const handleContinue = () => {
+        router.push('../');
+    };
+
     if (error) {
         return (
             <View style={styles.errorContainer}>
@@ -268,7 +270,7 @@ const Location = () => {
     return (
         <ImageBackground
             style={styles.background}
-            source={require('../../assets/images/appItems/background.jpg')}
+            source={require('./assets/images/appItems/background.jpg')}
         >
             <StatusBar style="dark" />
             <SafeAreaView
@@ -281,10 +283,10 @@ const Location = () => {
                 ]}>
                     <TouchableOpacity
                         style={styles.backButton}
-                        onPress={() => router.push('../')}
+                        onPress={handleBackButton}
                     >
                         <Image
-                            source={require('../../assets/images/appItems/goBack.png')}
+                            source={require('./assets/images/appItems/goBack.png')}
                             style={styles.backIcon}
                         />
                     </TouchableOpacity>
@@ -292,13 +294,13 @@ const Location = () => {
                     {/* Header Content */}
                     <View style={styles.content}>
                         <Image
-                            source={require('../../assets/images/appItems/locationIcon.png')}
+                            source={require('./assets/images/appItems/locationIcon.png')}
                             style={styles.image}
                         />
                         <View style={styles.textContainer}>
-                            <Text style={styles.title}>Select Your Location</Text>
+                            <Text style={styles.title}>Change Your Location</Text>
                             <Text style={styles.description}>
-                                Switch on your location to stay in tune with what's happening in your area
+                                Update your location to see delivery options for your area
                             </Text>
                         </View>
                     </View>
@@ -340,7 +342,7 @@ const Location = () => {
                                 (!selectedCountry || !selectedCity) && { opacity: 0.5 }
                             ]}
                             disabled={!selectedCountry || !selectedCity}
-                            onPress={() => router.push('/login/login')}
+                            onPress={handleContinue}
                             onPressIn={handlePressIn}
                             onPressOut={handlePressOut}
                         >
@@ -350,7 +352,7 @@ const Location = () => {
                                 width: '100%',
                                 alignItems: 'center'
                             }}>
-                                <Text style={styles.buttonText}>Continue</Text>
+                                <Text style={styles.buttonText}>Update Location</Text>
                             </Animated.View>
                         </TouchableOpacity>
                     </View>
@@ -453,7 +455,7 @@ const styles = StyleSheet.create({
         color: 'rgba(124, 124, 124, 1)',
     },
 
-    // New Modern Dropdown Styles
+    // Modern Dropdown Styles
     dropdownContainer: {
         width: '100%',
         position: 'relative',
@@ -542,4 +544,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Location;
+export default ChangeLocation;

@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
   ActivityIndicator,
   Dimensions
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { MapView, Marker } from 'expo-maps';
+import MapView, { Marker } from 'react-native-maps';
 import { useLocationContext } from '../context/LocationContext';
 import LOCATION_COORDINATES from '../app/data/locationCoordinates';
+const { SafeAreaView } = require('../components/common');
 
 const { width, height } = Dimensions.get('window');
 
@@ -58,10 +58,11 @@ const LocationMap = ({ region, address, mapRef, onRecenter, errorMsg }) => (
             }}
             title="Delivery Location"
             description={address}
-            color="#53B175"  // Changed from pinColor to color for expo-maps
+            pinColor="#53B175"
           />
+
         </MapView>
-        
+
         <TouchableOpacity style={styles.recenterButton} onPress={onRecenter}>
           <Ionicons name="location" size={24} color="#fff" />
         </TouchableOpacity>
@@ -77,25 +78,25 @@ const AddressDetails = ({ address, selectedCountry, selectedCity, onChangeLocati
       <Ionicons name="location" size={24} color="#53B175" />
       <Text style={styles.addressTitle}>Delivery Location</Text>
     </View>
-    
+
     <View style={styles.addressCard}>
       <Text style={styles.addressText}>{address || 'Address not available'}</Text>
-      
+
       <View style={styles.locationInfo}>
         <Text style={styles.locationLabel}>Selected Zone:</Text>
         <Text style={styles.locationValue}>
           {selectedCountry ? `${selectedCountry.icon} ${selectedCountry.title}` : 'Not selected'}
         </Text>
       </View>
-      
+
       <View style={styles.locationInfo}>
         <Text style={styles.locationLabel}>Selected Area:</Text>
         <Text style={styles.locationValue}>
           {selectedCity ? `${selectedCity.icon} ${selectedCity.title}` : 'Not selected'}
         </Text>
       </View>
-      
-      <TouchableOpacity 
+
+      <TouchableOpacity
         style={styles.changeLocationButton}
         onPress={onChangeLocation}
       >
@@ -136,26 +137,26 @@ export default function DeliveryAddressScreen() {
   const loadSelectedLocation = () => {
     try {
       setLoading(true);
-      
+
       if (!selectedCity || !selectedCountry) {
         setErrorMsg('No delivery location selected. Please select a location.');
         setLoading(false);
         return;
       }
-      
+
       // Set the address from the selected location
       const formattedLocation = getFormattedLocation();
       setAddress(formattedLocation);
-      
+
       // Try to use predefined coordinates instead of geocoding
       const cityName = selectedCity.title;
       let coordinates = LOCATION_COORDINATES[cityName];
-      
+
       // If we don't have predefined coordinates for this city, use default
       if (!coordinates) {
         coordinates = LOCATION_COORDINATES.default;
       }
-      
+
       // Set the map region to the coordinates
       setRegion({
         latitude: coordinates.latitude,
@@ -177,7 +178,7 @@ export default function DeliveryAddressScreen() {
   };
 
   const handleChangeLocation = () => {
-    router.push('/(auth)/location/location');
+    router.push('/change-location');
   };
 
   if (loading) {
@@ -187,22 +188,22 @@ export default function DeliveryAddressScreen() {
   return (
     <SafeAreaView edges={['top']} style={styles.container}>
       <Stack.Screen options={{ headerShown: false }} />
-      
+
       <Header onBack={() => router.back()} title="Delivery Address" />
-      
+
       {selectedCountry && selectedCity && (
         <LocationBanner locationText={getFormattedLocation()} />
       )}
-      
-      <LocationMap 
+
+      <LocationMap
         region={region}
         address={address}
         mapRef={mapRef}
         onRecenter={animateToRegion}
         errorMsg={errorMsg}
       />
-      
-      <AddressDetails 
+
+      <AddressDetails
         address={address}
         selectedCountry={selectedCountry}
         selectedCity={selectedCity}

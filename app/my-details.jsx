@@ -11,11 +11,11 @@ import {
   ActivityIndicator,
   Alert
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, Stack } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
+const { SafeAreaView } = require('../components/common');
 
 export default function MyDetailsScreen() {
   const router = useRouter();

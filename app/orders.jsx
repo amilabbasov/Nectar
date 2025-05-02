@@ -5,12 +5,12 @@ import {
   StyleSheet, 
   FlatList, 
   TouchableOpacity, 
-  ActivityIndicator 
+  ActivityIndicator
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useOrders } from '../context/OrdersContext';
 import { Ionicons } from '@expo/vector-icons';
+const { SafeAreaView } = require('../components/common');
 
 export default function OrdersScreen() {
   const router = useRouter();

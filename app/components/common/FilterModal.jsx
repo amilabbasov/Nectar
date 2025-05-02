@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, Dimensions, Animated, Platform, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, Animated, Platform, TouchableWithoutFeedback, FlatList, PanResponder } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
-import { PanGestureHandler, State, GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const CATEGORIES = [
   { id: 'organic', label: 'Organic' },
@@ -42,6 +41,37 @@ const FilterModal = ({ visible, onClose, onApply, onClear }) => {
   });
 
   const translateY = useRef(new Animated.Value(height)).current;
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        return Math.abs(gestureState.dy) > Math.abs(gestureState.dx * 3);
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        if (gestureState.dy > 0) {
+          translateY.setValue(gestureState.dy);
+        }
+      },
+      onPanResponderRelease: (evt, gestureState) => {
+        if (gestureState.dy > height * 0.2 || gestureState.vy > 0.5) {
+          Animated.timing(translateY, {
+            toValue: height,
+            duration: 250,
+            useNativeDriver: true,
+          }).start(() => {
+            onClose();
+          });
+        } else {
+          Animated.spring(translateY, {
+            toValue: 0,
+            friction: 8,
+            tension: 40,
+            useNativeDriver: true,
+          }).start();
+        }
+      }
+    })
+  ).current;
 
   useEffect(() => {
     if (visible) {
@@ -61,34 +91,6 @@ const FilterModal = ({ visible, onClose, onApply, onClear }) => {
       }).start();
     }
   }, [visible]);
-
-  const handleGestureEvent = (event) => {
-    const { translationY } = event.nativeEvent;
-    if (translationY > 0) {
-      translateY.setValue(translationY);
-    }
-  };
-
-  const handleHandlerStateChange = (event) => {
-    if (event.nativeEvent.state === State.END) {
-      const { translationY } = event.nativeEvent;
-
-      if (translationY > 100) {
-        Animated.timing(translateY, {
-          toValue: height,
-          duration: 250,
-          useNativeDriver: true,
-        }).start(() => onClose());
-      } else {
-        Animated.spring(translateY, {
-          toValue: 0,
-          useNativeDriver: true,
-          bounciness: 5,
-          speed: 12,
-        }).start();
-      }
-    }
-  };
 
   const handleCategoryToggle = (categoryId) => {
     setFilters(prev => ({
@@ -130,151 +132,152 @@ const FilterModal = ({ visible, onClose, onApply, onClear }) => {
     onClose();
   };
 
+  const flatListRef = useRef(null);
+
   return (
     <Modal
       visible={visible}
       transparent
-      animationType="none"
+      animationType="fade"
       onRequestClose={onClose}
       statusBarTranslucent
     >
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <TouchableWithoutFeedback onPress={onClose}>
-          <View style={styles.modalContainer}>
-            <BlurView intensity={Platform.OS === 'ios' ? 50 : 100} tint="dark" style={styles.blurView}>
-              <PanGestureHandler
-                onGestureEvent={handleGestureEvent}
-                onHandlerStateChange={handleHandlerStateChange}
-                activeOffsetY={[0, 20]}
-              >
-                <Animated.View
-                  style={[
-                    styles.modalContent,
-                    {
-                      transform: [{
-                        translateY: translateY.interpolate({
-                          inputRange: [0, 1000],
-                          outputRange: [0, 1000],
-                          extrapolate: 'clamp'
-                        })
-                      }],
-                    }
-                  ]}
-                >
-                  <View style={styles.dragIndicator} />
-                  <View style={styles.header}>
-                    <Text style={styles.title}>Filters</Text>
-                    <View style={styles.headerButtons}>
-                      <TouchableOpacity onPress={handleClearFilters} style={styles.clearButton}>
-                        <Text style={styles.clearButtonText}>Clear</Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={onClose}>
-                        <Ionicons name="close" size={24} color="#181725" />
-                      </TouchableOpacity>
+      <View style={styles.modalContainer}>
+        <BlurView intensity={Platform.OS === 'ios' ? 50 : 100} tint="dark" style={styles.blurView}>
+          <TouchableWithoutFeedback onPress={onClose}>
+            <View style={styles.outsideModalArea} />
+          </TouchableWithoutFeedback>
+          
+          <Animated.View 
+            style={[
+              styles.modalContent,
+              {
+                transform: [{ translateY }]
+              }
+            ]}
+          >
+            <View {...panResponder.panHandlers} style={styles.dragArea}>
+              <View style={styles.dragIndicator} />
+              
+              <View style={styles.header}>
+                <Text style={styles.title}>Filters</Text>
+                <View style={styles.headerButtons}>
+                  <TouchableOpacity onPress={handleClearFilters} style={styles.clearButton}>
+                    <Text style={styles.clearButtonText}>Clear</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={onClose}>
+                    <Ionicons name="close" size={24} color="#181725" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+            
+            <FlatList
+              ref={flatListRef}
+              data={[{ key: 'content' }]}
+              renderItem={() => (
+                <View style={styles.contentContainer}>
+                  <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Categories</Text>
+                    <View style={styles.categoriesGrid}>
+                      {CATEGORIES.map((category) => (
+                        <TouchableOpacity
+                          key={category.id}
+                          style={[
+                            styles.categoryChip,
+                            filters.selectedCategories.includes(category.id) && styles.categoryChipSelected
+                          ]}
+                          onPress={() => handleCategoryToggle(category.id)}
+                        >
+                          <Text style={[
+                            styles.categoryChipText,
+                            filters.selectedCategories.includes(category.id) && styles.categoryChipTextSelected
+                          ]}>
+                            {category.label}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
                     </View>
                   </View>
 
-                  <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    style={styles.scrollContent}
-                    nestedScrollEnabled={true}
-                  >
-                    <View style={styles.section}>
-                      <Text style={styles.sectionTitle}>Categories</Text>
-                      <View style={styles.categoriesGrid}>
-                        {CATEGORIES.map((category) => (
-                          <TouchableOpacity
-                            key={category.id}
-                            style={[
-                              styles.categoryChip,
-                              filters.selectedCategories.includes(category.id) && styles.categoryChipSelected
-                            ]}
-                            onPress={() => handleCategoryToggle(category.id)}
-                          >
-                            <Text style={[
-                              styles.categoryChipText,
-                              filters.selectedCategories.includes(category.id) && styles.categoryChipTextSelected
-                            ]}>
-                              {category.label}
-                            </Text>
-                          </TouchableOpacity>
-                        ))}
-                      </View>
+                  <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Sort By</Text>
+                    <View style={styles.sortOptions}>
+                      {SORT_OPTIONS.map((option) => (
+                        <TouchableOpacity
+                          key={option.id}
+                          style={[
+                            styles.sortOption,
+                            filters.sortBy === option.id && styles.sortOptionSelected
+                          ]}
+                          onPress={() => handleSortChange(option.id)}
+                        >
+                          <Text style={[
+                            styles.sortOptionText,
+                            filters.sortBy === option.id && styles.sortOptionTextSelected
+                          ]}>
+                            {option.label}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
                     </View>
+                  </View>
 
-                    <View style={styles.section}>
-                      <Text style={styles.sectionTitle}>Sort By</Text>
-                      <View style={styles.sortOptions}>
-                        {SORT_OPTIONS.map((option) => (
-                          <TouchableOpacity
-                            key={option.id}
-                            style={[
-                              styles.sortOption,
-                              filters.sortBy === option.id && styles.sortOptionSelected
-                            ]}
-                            onPress={() => handleSortChange(option.id)}
-                          >
-                            <Text style={[
-                              styles.sortOptionText,
-                              filters.sortBy === option.id && styles.sortOptionTextSelected
-                            ]}>
-                              {option.label}
-                            </Text>
-                          </TouchableOpacity>
-                        ))}
-                      </View>
+                  <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Product Type</Text>
+                    <View style={styles.productTypesGrid}>
+                      {PRODUCT_TYPES.map((type) => (
+                        <TouchableOpacity
+                          key={type.id}
+                          style={[
+                            styles.productTypeChip,
+                            filters.selectedProductTypes.includes(type.id) && styles.productTypeChipSelected
+                          ]}
+                          onPress={() => handleProductTypeToggle(type.id)}
+                        >
+                          <Text style={[
+                            styles.productTypeChipText,
+                            filters.selectedProductTypes.includes(type.id) && styles.productTypeChipTextSelected
+                          ]}>
+                            {type.label}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
                     </View>
-
-                    <View style={styles.section}>
-                      <Text style={styles.sectionTitle}>Product Type</Text>
-                      <View style={styles.productTypesGrid}>
-                        {PRODUCT_TYPES.map((type) => (
-                          <TouchableOpacity
-                            key={type.id}
-                            style={[
-                              styles.productTypeChip,
-                              filters.selectedProductTypes.includes(type.id) && styles.productTypeChipSelected
-                            ]}
-                            onPress={() => handleProductTypeToggle(type.id)}
-                          >
-                            <Text style={[
-                              styles.productTypeChipText,
-                              filters.selectedProductTypes.includes(type.id) && styles.productTypeChipTextSelected
-                            ]}>
-                              {type.label}
-                            </Text>
-                          </TouchableOpacity>
-                        ))}
-                      </View>
-                    </View>
-
-                    <TouchableOpacity
-                      style={styles.stockToggle}
-                      onPress={() => setFilters(prev => ({ ...prev, inStockOnly: !prev.inStockOnly }))}
-                    >
-                      <Text style={styles.stockToggleText}>Show In Stock Only</Text>
-                      <View style={[
-                        styles.checkbox,
-                        filters.inStockOnly && styles.checkboxSelected
-                      ]}>
-                        {filters.inStockOnly && <Ionicons name="checkmark" size={16} color="#FFFFFF" />}
-                      </View>
-                    </TouchableOpacity>
-                  </ScrollView>
+                  </View>
 
                   <TouchableOpacity
-                    style={styles.applyButton}
-                    onPress={handleApply}
-                    activeOpacity={0.7}
+                    style={styles.stockToggle}
+                    onPress={() => setFilters(prev => ({ ...prev, inStockOnly: !prev.inStockOnly }))}
                   >
-                    <Text style={styles.applyButtonText}>Apply Filters</Text>
+                    <Text style={styles.stockToggleText}>Show In Stock Only</Text>
+                    <View style={[
+                      styles.checkbox,
+                      filters.inStockOnly && styles.checkboxSelected
+                    ]}>
+                      {filters.inStockOnly && <Ionicons name="checkmark" size={16} color="#FFFFFF" />}
+                    </View>
                   </TouchableOpacity>
-                </Animated.View>
-              </PanGestureHandler>
-            </BlurView>
-          </View>
-        </TouchableWithoutFeedback>
-      </GestureHandlerRootView>
+                </View>
+              )}
+              keyExtractor={item => item.key}
+              showsVerticalScrollIndicator={true}
+              contentContainerStyle={styles.flatListContent}
+              onResponderTerminationRequest={() => translateY._value > 10}
+            />
+
+            <View style={styles.footer}>
+              <TouchableOpacity
+                style={styles.applyButton}
+                onPress={handleApply}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.applyButtonText}>Apply Filters</Text>
+              </TouchableOpacity>
+            </View>
+          </Animated.View>
+        </BlurView>
+      </View>
     </Modal>
   );
 };
@@ -288,11 +291,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
   },
+  outsideModalArea: {
+    flex: 1,
+  },
   modalContent: {
     backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: '80%',
+  },
+  dragArea: {
+    paddingHorizontal: 20,
   },
   dragIndicator: {
     width: 60,
@@ -301,22 +310,30 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     alignSelf: 'center',
     marginTop: 12,
+    marginBottom: 8,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E2E2',
+    paddingVertical: 20,
   },
   title: {
     fontSize: 20,
     fontWeight: '600',
     color: '#181725',
   },
-  scrollContent: {
+  contentContainer: {
     padding: 20,
+  },
+  flatListContent: {
+    paddingBottom: 10,
+  },
+  footer: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#E2E2E2',
   },
   section: {
     marginBottom: 24,
@@ -399,7 +416,7 @@ const styles = StyleSheet.create({
   },
   stockToggleText: {
     fontSize: 16,
-    color: '#181725',
+    paddingVertical: 8,
   },
   checkbox: {
     width: 24,
@@ -416,8 +433,7 @@ const styles = StyleSheet.create({
   },
   applyButton: {
     backgroundColor: '#53B175',
-    margin: 20,
-    borderRadius: 12,
+    margin: 12,
     padding: 16,
     alignItems: 'center',
   },

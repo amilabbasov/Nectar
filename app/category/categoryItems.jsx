@@ -2,7 +2,6 @@ import { View, Text, StyleSheet, TouchableOpacity, InteractionManager, ActivityI
 import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { FlashList } from '@shopify/flash-list';
 import { organicProducts } from '../data/productCategories/organicProducts';
 import { freshFruitsVegetables } from '../data/productCategories/freshFruitsVegetables';
@@ -15,6 +14,7 @@ import { frozenFoods } from '../data/productCategories/frozenFoods';
 import { spicesAndSeasonings } from '../data/productCategories/spicesAndSeasonings';
 import { riceAndGrains } from '../data/productCategories/riceAndGrains';
 import ProductCard from '../components/common/ProductCard';
+const { SafeAreaView } = require('../../components/common');
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const ITEM_WIDTH = (SCREEN_WIDTH - 50) / 2;

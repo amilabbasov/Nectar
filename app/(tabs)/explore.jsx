@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList, ActivityIndicator } from 'react-native';
 import { Image } from 'expo-image';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import exploreData from '../data/exploreData';
 import { useRouter } from 'expo-router';
@@ -19,6 +18,7 @@ import ProductCard from '../components/common/ProductCard';
 import { Ionicons } from '@expo/vector-icons';
 import FilterModal from '../components/common/FilterModal';
 import { InteractionManager } from 'react-native';
+const { SafeAreaView } = require('../../components/common');
 
 const ITEM_HEIGHT = 260; // Approximate height of each product card including margins
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TextInput, Image, FlatList } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TextInput, Image, FlatList } from 'react-native';
 import { useSearch } from './hooks/useSearch';
 import { organicProducts } from './data/productCategories/organicProducts';
 import { freshFruitsVegetables } from './data/productCategories/freshFruitsVegetables';
@@ -12,6 +12,7 @@ import { cookingOilGhee } from './data/productCategories/cookingOilGhee';
 import { riceAndGrains } from './data/productCategories/riceAndGrains';
 import { spicesAndSeasonings } from './data/productCategories/spicesAndSeasonings';
 import ProductCard from './components/common/ProductCard';
+const { SafeAreaView } = require('../components/common');
 
 export default function SearchScreen() {
 

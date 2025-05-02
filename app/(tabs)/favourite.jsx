@@ -1,8 +1,9 @@
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import React from 'react';
 import { useFavorites } from '../../context/FavoritesContext';
 import { useRouter } from 'expo-router';
+const { SafeAreaView } = require('../../components/common');
+
 
 export default function FavoritesScreen() {
   const { favoriteItems, removeFromFavorites } = useFavorites();

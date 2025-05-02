@@ -19,16 +19,15 @@
       },
       "bundleIdentifier": "com.amilabbasov.nectar",
       "config": {
-        "googleMapsApiKey": "YOUR_API_KEY_HERE"
+        "googleMapsApiKey": "YOUR_VALID_GOOGLE_MAPS_API_KEY"
       }
     },
     "android": {
       "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/images/appItems/splash.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#53B175"
       },
-      "jsEngine": "jsc",
       "package": "com.amilabbasov.nectar",
       "permissions": [
         "ACCESS_FINE_LOCATION",
@@ -55,7 +54,9 @@
         {
           "image": "./app/assets/images/appItems/splash.png",
           "resizeMode": "contain",
-          "backgroundColor": "#53B175"
+          "backgroundColor": "#53B175",
+          "imageResizeMode": "contain",
+          "hideExponentIconAndroid": true
         }
       ],
       [
@@ -66,8 +67,7 @@
           "locationWhenInUsePermission": "Nectar uses your location to find nearby stores and delivery options."
         }
       ],
-      "expo-secure-store",
-      "expo-maps"
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true

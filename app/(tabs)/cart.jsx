@@ -1,10 +1,10 @@
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Modal, TextInput, ActivityIndicator, Animated, Dimensions, StatusBar, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Modal, TextInput, ActivityIndicator, Animated, Dimensions, StatusBar, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
 import React, { useState, useEffect, useRef } from 'react';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { useOrders } from '../../context/OrdersContext';
 import { Ionicons } from '@expo/vector-icons';
+const { SafeAreaView } = require('../../components/common');
 
 const { height } = Dimensions.get('window');
 

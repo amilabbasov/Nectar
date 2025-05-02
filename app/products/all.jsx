@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, Platform } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import ProductCard from '../components/common/ProductCard';
 import { freshFruitsVegetables } from '../data/productCategories/freshFruitsVegetables';
@@ -11,6 +10,7 @@ import { riceAndGrains } from '../data/productCategories/riceAndGrains';
 import { spicesAndSeasonings } from '../data/productCategories/spicesAndSeasonings';
 import { beverages } from '../data/productCategories/beverages';
 import { cookingOilGhee } from '../data/productCategories/cookingOilGhee';
+const { SafeAreaView } = require('../../components/common');
 
 const ITEM_HEIGHT = 260;
 

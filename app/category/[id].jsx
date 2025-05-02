@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { groceryCategories } from '../data/groceryCategories';
+const { SafeAreaView } = require('../../components/common');
 
 export default function CategoryScreen() {
   const { id } = useLocalSearchParams();

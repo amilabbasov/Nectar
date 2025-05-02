@@ -11,12 +11,12 @@ import {
   Animated,
   Dimensions,
   StatusBar,
-  Platform,
+  Platform
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 import { useLocationContext } from '../../context/LocationContext';
+const { SafeAreaView } = require('../../components/common');
 
 const { height } = Dimensions.get('window');
 

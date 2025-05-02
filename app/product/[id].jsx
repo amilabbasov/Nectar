@@ -1,5 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, AlertSafeAreaView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCart } from '../../context/CartContext';
@@ -16,6 +15,7 @@ import { cookingOilGhee } from '../data/productCategories/cookingOilGhee';
 import { riceAndGrains } from '../data/productCategories/riceAndGrains';
 import { spicesAndSeasonings } from '../data/productCategories/spicesAndSeasonings';
 import { bestSellers } from '../data/bestSellers';
+const { SafeAreaView } = require('../../components/common');
 
 export default function ProductDetails() {
     const router = useRouter();
