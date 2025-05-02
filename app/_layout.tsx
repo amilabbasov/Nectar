@@ -3,7 +3,7 @@ import { Provider as PaperProvider } from "react-native-paper";
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback, useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import 'react-native-reanimated';
 import { CartProvider } from '../context/CartContext';
 import { FavoritesProvider } from '../context/FavoritesContext';
@@ -25,9 +25,7 @@ function RootLayout() {
   useEffect(() => {
     async function prepare() {
       try {
-        // Pre-load any data or resources here
-        // Add a longer delay to ensure splash screen is visible
-        await new Promise(resolve => setTimeout(resolve, 2500));
+        await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (e) {
         console.warn('Error preparing app:', e);
       } finally {
@@ -40,22 +38,24 @@ function RootLayout() {
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded && appIsReady) {
-      // Add a small delay before hiding splash screen for smoother transition
-      setTimeout(async () => {
-        try {
-          await SplashScreen.hideAsync();
-        } catch (e) {
-          // Handle any errors hiding the splash screen
-          console.log("Error hiding splash screen:", e);
-        }
-      }, 500);
+      try {
+        await SplashScreen.hideAsync();
+      } catch (e) {
+        console.log("Error hiding splash screen:", e);
+      }
     }
   }, [fontsLoaded, appIsReady]);
 
   // Show a simple loading screen with only background color matching splash
   if (!fontsLoaded || !appIsReady) {
     return (
-      <View style={styles.loadingContainer} />
+      <View style={styles.loadingContainer}>
+        <Image 
+          source={require('./assets/images/appItems/splash.png')}
+          style={styles.splashImage}
+          resizeMode="contain"
+        />
+      </View>
     );
   }
 
@@ -86,8 +86,14 @@ function RootLayout() {
 const styles = StyleSheet.create({
   loadingContainer: {
     flex: 1,
-    backgroundColor: '#53B175', // Match your splash screen background color
-  }
+    backgroundColor: '#53B175',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  splashImage: {
+    width: '70%',
+    height: '40%',
+  },
 });
 
 // Make sure the default export is explicit and at the end of the file
