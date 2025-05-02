@@ -35,3 +35,5 @@ export const useKeyboardHandling = (currentStep) => {
 
   return { modalPosition, keyboardHeight };
 };
+
+export default useKeyboardHandling;

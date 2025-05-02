@@ -41,3 +41,5 @@ export const useModalAnimation = (isVisible) => {
 
   return { slideAnim, fadeAnim };
 };
+
+export default useModalAnimation;

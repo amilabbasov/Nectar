@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useRef, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { Image } from 'expo-image';
 import { useCart } from '../../../context/CartContext';
@@ -7,8 +7,17 @@ import { useRouter } from 'expo-router';
 const ProductCard = ({ id, name, pieces, price, img, inStock }) => {
   const { addToCart } = useCart();
   const router = useRouter();
+  const [shouldRender, setShouldRender] = useState(false);
 
   const isInStock = inStock === undefined ? true : Boolean(inStock);
+
+  // Delay image loading to improve performance
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShouldRender(true);
+    }, 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleAddToCart = useCallback((e) => {
     e.stopPropagation();
@@ -35,15 +44,19 @@ const ProductCard = ({ id, name, pieces, price, img, inStock }) => {
     ]}>
       {/* Product Image */}
       <View style={styles.imageContainer}>
-        <Image
-          source={typeof img === 'string' ? { uri: img } : img}
-          style={styles.productImage}
-          contentFit="contain"
-          cachePolicy="memory-disk"
-          recyclingKey={`product-${id}`}
-          transition={150}
-          priority={Platform.select({ ios: 'high', android: 'normal' })}
-        />
+        {shouldRender ? (
+          <Image
+            source={typeof img === 'string' ? { uri: img } : img}
+            style={styles.productImage}
+            contentFit="contain"
+            cachePolicy="memory-disk"
+            recyclingKey={`product-${id}`}
+            transition={150}
+            priority={Platform.select({ ios: 'high', android: 'normal' })}
+          />
+        ) : (
+          <View style={[styles.productImage, { backgroundColor: '#F5F5F5' }]} />
+        )}
         {!isInStock && (
           <View style={styles.outOfStockBadge}>
             <Text style={styles.outOfStockText}>Out of Stock</Text>

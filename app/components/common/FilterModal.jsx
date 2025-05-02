@@ -1,8 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Dimensions, Animated, Platform, TouchableWithoutFeedback, FlatList, PanResponder } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { Ionicons } from '@expo/vector-icons';
 
+// Move these outside the component to prevent recreation on each render
 const CATEGORIES = [
   { id: 'organic', label: 'Organic' },
   { id: 'fresh', label: 'Fresh Fruits & Vegetables' },
@@ -41,6 +42,49 @@ const FilterModal = ({ visible, onClose, onApply, onClear }) => {
   });
 
   const translateY = useRef(new Animated.Value(height)).current;
+
+  // Use useCallback for handlers to prevent recreating functions on each render
+  const handleCategoryToggle = useCallback((categoryId) => {
+    setFilters(prev => ({
+      ...prev,
+      selectedCategories: prev.selectedCategories.includes(categoryId)
+        ? prev.selectedCategories.filter(id => id !== categoryId)
+        : [...prev.selectedCategories, categoryId]
+    }));
+  }, []);
+
+  const handleProductTypeToggle = useCallback((typeId) => {
+    setFilters(prev => ({
+      ...prev,
+      selectedProductTypes: prev.selectedProductTypes.includes(typeId)
+        ? prev.selectedProductTypes.filter(id => id !== typeId)
+        : [...prev.selectedProductTypes, typeId]
+    }));
+  }, []);
+
+  const handleSortChange = useCallback((sortOption) => {
+    setFilters(prev => ({
+      ...prev,
+      sortBy: sortOption
+    }));
+  }, []);
+
+  const handleClearFilters = useCallback(() => {
+    setFilters({
+      selectedCategories: [],
+      sortBy: 'none',
+      selectedProductTypes: [],
+      inStockOnly: false
+    });
+    onClear();
+  }, [onClear]);
+
+  const handleApply = useCallback(() => {
+    onApply(filters);
+    onClose();
+  }, [filters, onApply, onClose]);
+
+  // Memoize PanResponder creation
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -77,11 +121,11 @@ const FilterModal = ({ visible, onClose, onApply, onClear }) => {
     if (visible) {
       translateY.setValue(height);
 
-      Animated.spring(translateY, {
+      // Simplify animation to reduce performance impact
+      Animated.timing(translateY, {
         toValue: 0,
+        duration: 300,
         useNativeDriver: true,
-        bounciness: 5,
-        speed: 12,
       }).start();
     } else {
       Animated.timing(translateY, {
@@ -90,47 +134,7 @@ const FilterModal = ({ visible, onClose, onApply, onClear }) => {
         useNativeDriver: true,
       }).start();
     }
-  }, [visible]);
-
-  const handleCategoryToggle = (categoryId) => {
-    setFilters(prev => ({
-      ...prev,
-      selectedCategories: prev.selectedCategories.includes(categoryId)
-        ? prev.selectedCategories.filter(id => id !== categoryId)
-        : [...prev.selectedCategories, categoryId]
-    }));
-  };
-
-  const handleProductTypeToggle = (typeId) => {
-    setFilters(prev => ({
-      ...prev,
-      selectedProductTypes: prev.selectedProductTypes.includes(typeId)
-        ? prev.selectedProductTypes.filter(id => id !== typeId)
-        : [...prev.selectedProductTypes, typeId]
-    }));
-  };
-
-  const handleSortChange = (sortOption) => {
-    setFilters(prev => ({
-      ...prev,
-      sortBy: sortOption
-    }));
-  };
-
-  const handleClearFilters = () => {
-    setFilters({
-      selectedCategories: [],
-      sortBy: 'none',
-      selectedProductTypes: [],
-      inStockOnly: false
-    });
-    onClear();
-  };
-
-  const handleApply = () => {
-    onApply(filters);
-    onClose();
-  };
+  }, [visible, translateY]);
 
   const flatListRef = useRef(null);
 
