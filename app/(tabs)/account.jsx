@@ -16,6 +16,7 @@ import {
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 import { useLocationContext } from '../../context/LocationContext';
+import { Ionicons } from '@expo/vector-icons';
 const { SafeAreaView } = require('../../components/common');
 
 const { height } = Dimensions.get('window');
@@ -147,14 +148,24 @@ export default function AccountScreen() {
           ))}
         </View>
 
-        {/* Logout Button */}
-        <TouchableOpacity style={styles.logoutButton} onPress={showLogoutModal}>
-          <Image
-            source={require('../assets/images/account/logout.png')}
-            style={styles.logoutIcon}
-          />
-          <Text style={styles.logoutText}>Log Out</Text>
-        </TouchableOpacity>
+        {/* Login/Logout Button */}
+        {user ? (
+          <TouchableOpacity style={styles.logoutButton} onPress={showLogoutModal}>
+            <Image
+              source={require('../assets/images/account/logout.png')}
+              style={styles.logoutIcon}
+            />
+            <Text style={styles.logoutText}>Log Out</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity 
+            style={styles.loginButton} 
+            onPress={() => router.push('/(auth)/login/login')}
+          >
+            <Ionicons name="log-in-outline" size={22} color="#53B175" style={styles.loginIcon} />
+            <Text style={styles.loginText}>Log In</Text>
+          </TouchableOpacity>
+        )}
 
         {/* Logout Confirmation Modal */}
         <Modal
@@ -297,6 +308,24 @@ const styles = StyleSheet.create({
     tintColor: '#53B175',
   },
   logoutText: {
+    color: '#53B175',
+    fontSize: 18,
+    fontWeight: '500',
+  },
+  loginButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F2F3F2',
+    padding: 16,
+    borderRadius: 12,
+    marginTop: 'auto',
+    marginBottom: Platform.OS === 'android' ? 20 : 0,
+  },
+  loginIcon: {
+    marginRight: 12,
+  },
+  loginText: {
     color: '#53B175',
     fontSize: 18,
     fontWeight: '500',
