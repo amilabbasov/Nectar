@@ -22,7 +22,7 @@ const Register = React.memo(() => {
   const [modalVisible, setModalVisible] = useState(false)
   const [modalType, setModalType] = useState('') // 'success' or 'error'
   const [modalMessage, setModalMessage] = useState('')
-  
+
   const router = useRouter()
   const { signUp } = useAuth()
 
@@ -77,12 +77,12 @@ const Register = React.memo(() => {
     setUsernameError('')
     setEmailError('')
     setPasswordError('')
-    
+
     // Validate all inputs
     const isUsernameValid = validateUsername(username)
     const isEmailValid = validateEmail(email)
     const isPasswordValid = validatePassword(password)
-    
+
     if (!isUsernameValid || !isEmailValid || !isPasswordValid) {
       return
     }
@@ -97,12 +97,12 @@ const Register = React.memo(() => {
     try {
       setLoading(true)
       await signUp(email.trim().toLowerCase(), password, username)
-      
+
       // Show success modal
       setModalType('success')
       setModalMessage('Your account has been created successfully!')
       setModalVisible(true)
-      
+
       // Delay navigation to allow users to see the success message
       setTimeout(() => {
         setModalVisible(false)
@@ -148,7 +148,7 @@ const Register = React.memo(() => {
                   <Image
                     source={require('../../assets/images/appItems/carrot-colorful.png')}
                     style={styles.logo}
-                    resizeMode="contain"
+                    contentFit="contain"
                   />
                   <View style={styles.welcomeContainer}>
                     <Text style={styles.welcomeText}>Sign Up</Text>
@@ -241,21 +241,21 @@ const Register = React.memo(() => {
                   <Ionicons name="checkmark-circle" size={60} color="#53B175" />
                 </View>
               )}
-              
+
               {modalType === 'error' && (
                 <View style={[styles.modalIconContainer, styles.errorIconContainer]}>
                   <Ionicons name="close-circle" size={60} color="#FF4B4B" />
                 </View>
               )}
-              
+
               <Text style={styles.modalTitle}>
                 {modalType === 'success' ? 'Success' : 'Registration Error'}
               </Text>
-              
+
               <Text style={styles.modalMessage}>
                 {modalMessage}
               </Text>
-              
+
               {modalType !== 'success' && (
                 <TouchableOpacity
                   style={[styles.modalButton, styles.errorButton]}
@@ -264,7 +264,7 @@ const Register = React.memo(() => {
                   <Text style={styles.modalButtonText}>Try Again</Text>
                 </TouchableOpacity>
               )}
-              
+
               {modalType === 'success' && (
                 <View style={styles.modalSuccessAnimation}>
                   <Ionicons name="arrow-forward-circle" size={24} color="#53B175" />
@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
   buttonDisabled: {
     opacity: 0.7,
   },
-  
+
   // Modal styles
   modalOverlay: {
     flex: 1,

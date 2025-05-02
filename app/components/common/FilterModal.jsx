@@ -40,9 +40,9 @@ const FilterModal = ({ visible, onClose, onApply, onClear }) => {
     selectedProductTypes: [],
     inStockOnly: false
   });
-  
+
   const translateY = useRef(new Animated.Value(height)).current;
-  
+
   useEffect(() => {
     if (visible) {
       translateY.setValue(height);
@@ -146,19 +146,17 @@ const FilterModal = ({ visible, onClose, onApply, onClear }) => {
                 onGestureEvent={handleGestureEvent}
                 onHandlerStateChange={handleHandlerStateChange}
                 activeOffsetY={[0, 20]}
-                failOffsetY={[-20, 0]}
-                minDist={10}
               >
-                <Animated.View 
+                <Animated.View
                   style={[
-                    styles.modalContent, 
-                    { 
-                      transform: [{ 
+                    styles.modalContent,
+                    {
+                      transform: [{
                         translateY: translateY.interpolate({
                           inputRange: [0, 1000],
                           outputRange: [0, 1000],
                           extrapolate: 'clamp'
-                        }) 
+                        })
                       }],
                     }
                   ]}
@@ -176,8 +174,8 @@ const FilterModal = ({ visible, onClose, onApply, onClear }) => {
                     </View>
                   </View>
 
-                  <ScrollView 
-                    showsVerticalScrollIndicator={false} 
+                  <ScrollView
+                    showsVerticalScrollIndicator={false}
                     style={styles.scrollContent}
                     nestedScrollEnabled={true}
                   >
@@ -264,8 +262,8 @@ const FilterModal = ({ visible, onClose, onApply, onClear }) => {
                     </TouchableOpacity>
                   </ScrollView>
 
-                  <TouchableOpacity 
-                    style={styles.applyButton} 
+                  <TouchableOpacity
+                    style={styles.applyButton}
                     onPress={handleApply}
                     activeOpacity={0.7}
                   >

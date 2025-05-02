@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import MapView, { Marker } from 'react-native-maps';
+import { MapView, Marker } from 'expo-maps';
 import { useLocationContext } from '../context/LocationContext';
 import LOCATION_COORDINATES from '../app/data/locationCoordinates';
 
@@ -58,7 +58,7 @@ const LocationMap = ({ region, address, mapRef, onRecenter, errorMsg }) => (
             }}
             title="Delivery Location"
             description={address}
-            pinColor="#53B175"
+            color="#53B175"  // Changed from pinColor to color for expo-maps
           />
         </MapView>
         

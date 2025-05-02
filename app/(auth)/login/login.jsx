@@ -123,7 +123,7 @@ const Login = () => {
                   <Image
                     source={require('../../assets/images/appItems/carrot-colorful.png')}
                     style={styles.logo}
-                    resizeMode="contain"
+                    contentFit="contain"
                   />
                   <View style={styles.welcomeContainer}>
                     <Text style={styles.welcomeText}>Login</Text>

@@ -47,7 +47,7 @@ export default function GroceriesScreen() {
       <Image
         source={typeof item.img === 'string' ? { uri: item.img } : item.img}
         style={styles.categoryIcon}
-        resizeMode="contain"
+        contentFit="contain"
       />
       <Text style={styles.categoryName}>{item.name}</Text>
     </TouchableOpacity>
@@ -67,7 +67,7 @@ export default function GroceriesScreen() {
               <Image
                 source={require('../assets/images/appItems/goBack.png')}
                 style={styles.backIcon}
-                resizeMode="contain"
+                contentFit="contain"
               />
             </TouchableOpacity>
           ),

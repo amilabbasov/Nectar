@@ -15,7 +15,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+function RootLayout() {
   const [appIsReady, setAppIsReady] = useState(false);
   const [fontsLoaded] = useFonts({
     'MaterialCommunityIcons': require('react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf'),
@@ -93,3 +93,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#53B175', // Match your splash screen background color
   }
 });
+
+// Make sure the default export is explicit and at the end of the file
+export default RootLayout;

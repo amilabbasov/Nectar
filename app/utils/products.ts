@@ -128,7 +128,7 @@ export function filterProducts(
     filtered = filtered.filter(product => product.inStock !== false);
   }
 
-  // Apply sorting - slice() əlavə edərək massivi kopyalayıb sonra sıralayırıq
+  // Apply sorting
   if (sortBy !== 'none') {
     filtered = filtered.slice().sort((a, b) => {
       switch (sortBy) {
@@ -148,3 +148,15 @@ export function filterProducts(
 
   return filtered;
 }
+
+// Add this default export with all the utility functions
+const productUtils = {
+  ALL_PRODUCTS,
+  getProductsByCategory,
+  searchProducts,
+  filterProducts,
+  transformProduct,
+  safeNumberConversion
+};
+
+export default productUtils;

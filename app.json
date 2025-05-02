@@ -7,7 +7,6 @@
     "icon": "./app/assets/images/appItems/splash.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "splash": {
       "image": "./app/assets/images/appItems/splash.png",
       "resizeMode": "contain",
@@ -29,12 +28,19 @@
         "foregroundImage": "./app/assets/images/appItems/splash.png",
         "backgroundColor": "#ffffff"
       },
+      "jsEngine": "jsc",
       "package": "com.amilabbasov.nectar",
-      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"],
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ],
       "config": {
         "googleMaps": {
           "apiKey": "YOUR_API_KEY_HERE"
         }
+      },
+      "runtimeVersion": {
+        "policy": "nativeVersion"
       }
     },
     "web": {
@@ -59,7 +65,9 @@
           "locationAlwaysPermission": "Nectar uses your location to find nearby stores and delivery options even when the app is in the background.",
           "locationWhenInUsePermission": "Nectar uses your location to find nearby stores and delivery options."
         }
-      ]
+      ],
+      "expo-secure-store",
+      "expo-maps"
     ],
     "experiments": {
       "typedRoutes": true

@@ -26,7 +26,7 @@ const GroceriesSection = ({ categories }) => {
             <Image
               source={typeof category.img === 'string' ? { uri: category.img } : category.img}
               style={styles.categoryIcon}
-              resizeMode="contain"
+              contentFit="contain"
             />
             <Text style={styles.categoryName}>{category.name}</Text>
           </TouchableOpacity>
