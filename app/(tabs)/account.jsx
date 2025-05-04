@@ -160,7 +160,7 @@ export default function AccountScreen() {
         ) : (
           <TouchableOpacity 
             style={styles.loginButton} 
-            onPress={() => router.push('/(auth)/login/login')}
+            onPress={() => router.push('/(auth)/welcome/welcome')}
           >
             <Ionicons name="log-in-outline" size={22} color="#53B175" style={styles.loginIcon} />
             <Text style={styles.loginText}>Log In</Text>
