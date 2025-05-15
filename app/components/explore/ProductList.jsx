@@ -1,10 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import ProductCard from '../common/ProductCard';
 
 const ITEM_HEIGHT = 260; // Approximate height of each product card including margins
 
-const ProductList = ({ 
+const ProductList = memo(({ 
   products, 
   searchQuery = '', 
   isFiltered = false, 
@@ -26,7 +26,7 @@ const ProductList = ({
 
   const getItemLayout = useCallback((data, index) => ({
     length: ITEM_HEIGHT,
-    offset: ITEM_HEIGHT * index,
+    offset: ITEM_HEIGHT * Math.floor(index / 2),
     index,
   }), []);
 
@@ -51,24 +51,26 @@ const ProductList = ({
       <FlatList
         data={products}
         renderItem={renderProductItem}
-        keyExtractor={(item, index) => `${item.categoryType}-${index}`}
+        keyExtractor={(item) => `${item.categoryType || ''}-${item.id || ''}`}
         numColumns={2}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.productsGridContainer}
         columnWrapperStyle={styles.productsRow}
         initialNumToRender={6}
-        maxToRenderPerBatch={6}
+        maxToRenderPerBatch={4}
         windowSize={5}
         removeClippedSubviews={true}
-        updateCellsBatchingPeriod={50}
+        updateCellsBatchingPeriod={30}
         getItemLayout={getItemLayout}
         onEndReached={onLoadMore}
         onEndReachedThreshold={0.5}
         ListFooterComponent={renderFooter}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
       />
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

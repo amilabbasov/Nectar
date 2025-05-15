@@ -1,9 +1,14 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import React, { memo, useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Platform } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 
-const SearchHeader = ({ searchQuery, onSearchChange, onFilterPress, title = "Find Products" }) => {
+const SearchHeader = memo(({ searchQuery, onSearchChange, onFilterPress, title = "Find Products" }) => {
+  // Use callback to prevent rerenders during typing
+  const handleTextChange = useCallback((text) => {
+    onSearchChange(text);
+  }, [onSearchChange]);
+  
   return (
     <View style={styles.header}>
       <Text style={styles.title}>{title}</Text>
@@ -18,7 +23,20 @@ const SearchHeader = ({ searchQuery, onSearchChange, onFilterPress, title = "Fin
           style={styles.searchInput}
           placeholderTextColor="#7C7C7C"
           value={searchQuery}
-          onChangeText={onSearchChange}
+          onChangeText={handleTextChange}
+          autoCapitalize="none"
+          autoCorrect={false}
+          returnKeyType="search"
+          clearButtonMode="while-editing"
+          keyboardType="default"
+          maxFontSizeMultiplier={1.0}
+          allowFontScaling={false}
+          spellCheck={false}
+          autoCompleteType="off"
+          importantForAutofill="no"
+          selectTextOnFocus={false}
+          enablesReturnKeyAutomatically={false}
+          textContentType="none"
         />
         <TouchableOpacity onPress={onFilterPress} style={styles.filterButton}>
           <Ionicons name="options-outline" size={24} color="#181725" />
@@ -26,7 +44,7 @@ const SearchHeader = ({ searchQuery, onSearchChange, onFilterPress, title = "Fin
       </View>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   header: {
@@ -60,6 +78,17 @@ const styles = StyleSheet.create({
     fontSize: 15,
     paddingVertical: 0,
     paddingLeft: 10,
+    color: '#181725',
+    includeFontPadding: false,
+    textAlignVertical: 'center',
+    ...Platform.select({
+      ios: {
+        height: 36,
+      },
+      android: {
+        height: 40,
+      }
+    })
   },
   filterButton: {
     padding: 8,

@@ -1,5 +1,5 @@
 import { ActivityIndicator } from 'react-native';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'expo-router';
 import { InteractionManager } from 'react-native';
 import { debounce } from 'lodash';
@@ -106,40 +106,27 @@ export default function ExploreScreen() {
     setDisplayProducts(filteredAndPaginatedProducts);
   }, [filteredAndPaginatedProducts]);
 
-  // Debounced search handler
-  const debouncedSearch = useMemo(
-    () => debounce((text) => {
-      setSearchQuery(text);
-    }, 300),
-    []
-  );
-
-  // Batch state updates
-  const batchStateUpdates = (newFilters, newPage) => {
-    setFilters(newFilters);
-    setPage(newPage);
-
-    const hasActiveFilters =
-      newFilters.selectedCategories.length > 0 ||
-      newFilters.selectedProductTypes.length > 0 ||
-      newFilters.inStockOnly ||
-      newFilters.sortBy !== 'none';
-
-    setIsFiltered(hasActiveFilters);
-  };
-
-  // Handler functions
-  const handleSearchChange = (text) => {
-    debouncedSearch(text);
-    batchStateUpdates(filters, 1); // Reset pagination when search changes
-  };
+  // Direct handler for search input - no debounce for immediate feedback
+  const handleSearchChange = useCallback((text) => {
+    setSearchQuery(text);
+    setPage(1);
+  }, []);
 
   const handleFilterPress = () => {
     setIsFilterModalVisible(true);
   };
 
   const handleApplyFilter = (newFilters) => {
-    batchStateUpdates(newFilters, 1); // Reset pagination when filters change
+    setFilters(newFilters);
+    setPage(1); // Reset pagination when filters change
+    
+    const hasActiveFilters =
+      newFilters.selectedCategories.length > 0 ||
+      newFilters.selectedProductTypes.length > 0 ||
+      newFilters.inStockOnly ||
+      newFilters.sortBy !== 'none';
+    
+    setIsFiltered(hasActiveFilters);
   };
 
   const handleClearFilters = () => {
