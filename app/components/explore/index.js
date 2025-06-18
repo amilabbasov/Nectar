@@ -7,3 +7,10 @@ export {
   CategoryGrid,
   ProductList
 };
+
+// Default export for Expo Router
+export default {
+  SearchHeader,
+  CategoryGrid,
+  ProductList
+};

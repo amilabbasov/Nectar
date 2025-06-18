@@ -4,7 +4,7 @@
     "slug": "nectar",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./app/assets/images/appItems/splash.png",
+    "icon": "app/assets/images/appItems/splash.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -13,11 +13,10 @@
       "backgroundColor": "#1CA044"
     },
     "assetBundlePatterns": [
-      "./app/assets/**/*",
-      "./assets/**/*"
+      "**/*"
     ],
     "fonts": [
-      "./app/assets/fonts/**/*"
+      "app/assets/fonts/*"
     ],
     "ios": {
       "supportsTablet": true,
@@ -36,7 +35,7 @@
     "android": {
       "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
-        "foregroundImage": "./app/assets/images/appItems/splash.png",
+        "foregroundImage": "app/assets/images/appItems/splash.png",
         "backgroundColor": "#1CA044"
       },
       "splash": null,
@@ -57,7 +56,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./app/assets/images/favicon.png"
+      "favicon": "app/assets/images/favicon.png"
     },
     "plugins": [
       "expo-router",
